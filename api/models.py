@@ -128,7 +128,7 @@ class Review(LikeMixinModel):
     )
     comment = models.TextField(max_length=300, default="먹을만해요.")
     written_at = models.DateTimeField(auto_now=True)
-    image = models.ImageField(default=None)
+    image = models.ImageField(default=None, blank=True)
 
     def is_already_written(self, writer, date):
         return (writer == self.written_by) and (date == self.written_at)
