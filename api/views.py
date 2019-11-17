@@ -17,7 +17,7 @@ class OrganizationCafeteriaMenuDetailView(generics.RetrieveAPIView):
         month = kwargs.get('month')
         day = kwargs.get('day')
         if year is not None and month is not None and day is not None:
-            menu_date = date(int(year), int(month), int(day))
+            menu_date = date(year, month, day)
         else:
             menu_date = None
         menu_time = kwargs.get('menu_time')
@@ -29,7 +29,7 @@ class OrganizationCafeteriaMenuDetailView(generics.RetrieveAPIView):
         menus = []
         for c in cafeterias:
             for menu in Menu.objects.filter(cafeteria_id=c.pk):
-                if menu.time is menu_time and menu.date is menu_date:
+                if menu.time == menu_time and menu.date == menu_date:
                     menus.append(menu)
         menus = MenuSerializer(menus, many=True)
         return Response(menus.data, status=status.HTTP_200_OK)
