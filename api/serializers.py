@@ -5,20 +5,21 @@ from .models import *
 
 # Review List Page & Review create Page
 
-class RatingSerializer(serializers.ModelSerializer):
+class SimpleUserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Rating
+        model = User
+        fields = ('username', 'level')
 
 
-# class ReviewSerializer(serializers.ModelSerializer):
-#     rating =
-#     class Meta:
-#         model = Review
-#         fields = '__all__'
+class ReviewSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Review
+        fields = '__all__'
 
 
 class DishSerializer(serializers.ModelSerializer):
-    # review_set = ReviewSerializer(many=True)
+    reviews = ReviewSerializer(many=True)
 
     class Meta:
         model = Dish
@@ -29,7 +30,7 @@ class DishSerializer(serializers.ModelSerializer):
 class SimpleDishSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dish
-        fields = ('name', 'avg_rating')
+        fields = ('name', 'rating_sum', 'rating_count')
 
 
 class MenuSerializer(serializers.ModelSerializer):
@@ -49,9 +50,9 @@ class CafeteriaSerializer(serializers.ModelSerializer):
 
 
 # Cafeteria List Page
-class BelongsToSerializer(serializers.ModelSerializer):
+class OrganizationSerializer(serializers.ModelSerializer):
     cafeterias = CafeteriaSerializer(many=True)
 
     class Meta:
-        model = BelongsTo
+        model = Organization
         fields = '__all__'

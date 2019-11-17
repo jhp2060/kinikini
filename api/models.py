@@ -2,25 +2,32 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
-class BelongsTo(models.Model):
+class Organization(models.Model):
     name = models.CharField(max_length=20)
 
     def __str__(self):
-        return "("+str(self.pk)+") "+str(self.name)
+        return "(" + str(self.pk) + ") " + str(self.name)
 
     class Meta:
-        verbose_name_plural = "Schools/Companies"
+        verbose_name_plural = "Organizations"
 
 
 class User(AbstractUser):
-    belongs_to = models.ForeignKey(
-        BelongsTo,
+    organization = models.ForeignKey(
+        Organization,
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
+        default=None,
     )
     review_cnt = models.IntegerField(default=0)
     level = models.IntegerField(default=1)
+
+    def __str__(self):
+        return "(" + str(self.pk) + ") " + str(self.username)
+
+    class Meta:
+        verbose_name_plural = "Users"
 
 
 class LikeMixinModel(models.Model):
@@ -49,15 +56,15 @@ class LikeMixinModel(models.Model):
 
 
 class Cafeteria(models.Model):
-    belongs_to = models.ForeignKey(
-        BelongsTo,
+    organization = models.ForeignKey(
+        Organization,
         on_delete=models.CASCADE,
         related_name='cafeterias'
     )
     name = models.CharField(max_length=20)
 
     def __str__(self):
-        return '('+str(self.pk)+") "+str(self.belongs_to.name)+" "+str(self.name)
+        return '(' + str(self.pk) + ") " + str(self.organization.name) + " " + str(self.name)
 
 
 class Menu(models.Model):
@@ -67,7 +74,7 @@ class Menu(models.Model):
         null=True,
         related_name='menus'
     )
-    TIME_CHOICES=(
+    TIME_CHOICES = (
         ("BREAKFAST", "BREAKFAST"),
         ("LUNCH", "LUNCH"),
         ("DINNER", "DINNER"),
@@ -77,45 +84,49 @@ class Menu(models.Model):
         choices=TIME_CHOICES,
         default=None,
     )
-    def __str__(self):
-        return '('+str(self.pk)+") "+str(self.cafeteria.name)+"의 메뉴"
+    date = models.DateField()
 
+    def __str__(self):
+        return str(self.cafeteria.name)+" "+str(self.date)+" "+self.time
 
 
 class Dish(LikeMixinModel):
-    menu = models.ForeignKey(
+    menus = models.ManyToManyField(
         Menu,
-        on_delete=models.CASCADE,
-        related_name='dishes'
+        related_name='dishes',
     )
     name = models.CharField(max_length=20)
     is_new = models.BooleanField(default=True)
-    avg_rating = models.FloatField(default=0)
     recent_date = models.DateField(auto_now=True)
+    frequency = models.IntegerField(default=1)
     is_bab_guk_kimchi = models.BooleanField(default=False)
     rating_sum = models.BigIntegerField(default=0)
     rating_count = models.BigIntegerField(default=0)
-    count = models.IntegerField(default=1)
 
     class Meta:
         verbose_name_plural = "dishes"
 
+    def avg_rating(self):
+        return self.rating_sum / self.rating_count
+
     def __str__(self):
-        return "("+str(self.pk)+") "+str(self.menu.cafeteria.name)+" "+str(self.name)
+        return "(" + str(self.pk) + ") " + str(self.name)
 
 
 class Review(LikeMixinModel):
+    rating = models.IntegerField(default=0)
     written_by = models.ForeignKey(
         User,
-        on_delete=models.CASCADE,
-        related_name='reviews'
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='reviews',
     )
     dish = models.ForeignKey(
         Dish,
         on_delete=models.CASCADE,
         related_name='reviews'
     )
-    comment = models.TextField(max_length=300, default=None)
+    comment = models.TextField(max_length=300, default="먹을만해요.")
     written_at = models.DateTimeField(auto_now=True)
     image = models.ImageField(default=None)
 
@@ -123,36 +134,27 @@ class Review(LikeMixinModel):
         return (writer == self.written_by) and (date == self.written_at)
 
 
-class Rating(models.Model):
-    rating = models.IntegerField(default=0)
-    review = models.OneToOneField(
-        Review,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='rating'
-    )
-    rated_by = models.ForeignKey(
+class FavoriteDish(models.Model):
+    favored_by = models.ForeignKey(
         User,
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name='ratings'
+        on_delete=models.CASCADE,
+        related_name='favorite_dishes'
     )
     dish = models.ForeignKey(
         Dish,
         on_delete=models.CASCADE,
-        related_name='ratings'
+        related_name='favorite_dishes'
     )
 
-class Wish(models.Model):
-    wished_by = models.ForeignKey(
+
+class FavoriteCafeteria(models.Model):
+    favored_by = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='wishes'
+        related_name='favorite_cafeteria'
     )
-    dish = models.ForeignKey(
-        Dish,
+    cafeteria = models.ForeignKey(
+        Cafeteria,
         on_delete=models.CASCADE,
-        related_name='wishes'
+        related_name='favorite_cafeteria'
     )
-
