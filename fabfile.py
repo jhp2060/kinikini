@@ -29,7 +29,7 @@ env.key_filename = ["~/.ssh/jhp2060.pem", ]
 
 virtualenv_folder = '/home/{}/.pyenv/versions/production'.format(env.user)
 project_folder = '/home/{}/srv/{}'.format(env.user, REPO_NAME)
-appname = 'core'
+appname = 'api'
 local_project_folder = os.path.join(PROJECT_DIR, PROJECT_NAME)
 
 
@@ -51,7 +51,7 @@ def _check_if_migration_needed(skip_migrations=False):
 
 
 def _local_test():
-    result = local('./manage.py test --keepdb'.format(PROJECT_DIR), capture=True)
+    result = local('python ./manage.py test --keepdb'.format(PROJECT_DIR), capture=True)
     if result.failed and not confirm("FAIL: Local tests are failed.\nContinue anyway?"):
         abort("Aborting at user request.")
 
@@ -133,14 +133,14 @@ def _grant_uwsgi():
 
 def _restart_uwsgi():
     print(green('_restart_uwsgi'))
-    sudo('sudo cp -f {}/config/uwsgi.service /etc/systemd/system/uwsgi.service'.format(project_folder))
+    sudo('sudo cp -f {}/.config/uwsgi.service /etc/systemd/system/uwsgi.service'.format(project_folder))
     sudo('sudo systemctl daemon-reload')
     sudo('sudo systemctl restart uwsgi')
 
 
 def _restart_nginx():
     print(green('_restart_nginx'))
-    sudo('sudo cp -f {}/config/nginx.conf /etc/nginx/sites-available/nginx.conf'.format(project_folder))
+    sudo('sudo cp -f {}/.config/nginx.conf /etc/nginx/sites-available/nginx.conf'.format(project_folder))
     sudo('sudo ln -sf /etc/nginx/sites-available/nginx.conf /etc/nginx/sites-enabled/nginx.conf')
     sudo('sudo systemctl restart nginx')
 
