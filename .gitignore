@@ -1,4 +1,5 @@
 yummy/secrets.json
+deploy.json
 .idea/
 .idea/*
 yummy/settings_prod.py
