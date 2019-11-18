@@ -103,9 +103,9 @@ def _update_virtualenv():
 
 def _update_static_files():
     print(green('_update_static_files'))
-    run('sudo chown -R ubuntu:ubuntu /var/www/cole-rochman/static')
+    run('sudo chown -R ubuntu:ubuntu /var/www/yummy/static')
     run('cd {} && {}/bin/python3 manage.py collectstatic --noinput'.format(project_folder, virtualenv_folder))
-    run('sudo chown -R root:root /var/www/cole-rochman/static')
+    run('sudo chown -R root:root /var/www/yummy/static')
 
 
 def _update_database():
@@ -151,10 +151,10 @@ def deploy(skip_migrations=False):
     try:
         _send_deploy_message(message='*Deploy has been started.*')
         _get_latest_source()
-        _upload_secrets_file()
+        #_upload_secrets_file()
         _update_settings()
         _update_virtualenv()
-        _update_static_files()
+        #_update_static_files()
         _update_database()
         _run_django_test()
         _grant_uwsgi()
