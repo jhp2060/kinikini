@@ -142,8 +142,8 @@ def _restart_uwsgi():
 
 def _restart_nginx():
     print(green('_restart_nginx'))
-    sudo('sudo cp -f {}/.config/nginx.conf /etc/nginx/sites-available/nginx.conf'.format(project_folder))
-    sudo('sudo ln -sf /etc/nginx/sites-available/nginx.conf /etc/nginx/sites-enabled/nginx.conf')
+    sudo('sudo cp -f {}/.config/nginx/yummy.conf /etc/nginx/sites-available/yummy.conf'.format(project_folder))
+    sudo('sudo ln -sf /etc/nginx/sites-available/yummy.conf /etc/nginx/sites-enabled/yummy.conf')
     sudo('sudo systemctl restart nginx')
 
 
