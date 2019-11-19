@@ -135,7 +135,7 @@ def _grant_uwsgi():
 
 def _restart_uwsgi():
     print(green('_restart_uwsgi'))
-    sudo('sudo cp -f {}/.config/uwsgi.service /etc/systemd/system/uwsgi.service'.format(project_folder))
+    sudo('sudo cp -f {}/.config/uwsgi /etc/systemd/system/uwsgi.service'.format(project_folder))
     sudo('sudo systemctl daemon-reload')
     sudo('sudo systemctl restart uwsgi')
 
