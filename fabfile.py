@@ -19,12 +19,14 @@ PROJECT_NAME = envs['PROJECT_NAME']
 REMOTE_HOST_SSH = envs['REMOTE_HOST_SSH']
 REMOTE_HOST = envs['REMOTE_HOST']
 REMOTE_USER = envs['REMOTE_USER']
+REMOTE_PASSWORD = envs['REMOTE_PASSWORD']
 ALLOWED_HOSTS = envs['ALLOWED_HOSTS']
 SLACK_WEBHOOK_URL = envs['SLACK_WEBHOOK_URL']
 
 env.user = REMOTE_USER
 username = env.user
 env.hosts = [REMOTE_HOST_SSH, ]
+env.password = REMOTE_PASSWORD
 env.key_filename = ["~/.ssh/jhp2060.pem", ]
 
 virtualenv_folder = '/home/{}/.pyenv/versions/production'.format(env.user)
