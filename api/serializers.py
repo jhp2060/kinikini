@@ -3,18 +3,27 @@ from rest_framework import serializers
 
 from .models import Review, Dish, Menu, Cafeteria, Organization
 
-
-
+# User Drawer
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username', 'organization', 'review_cnt',)
 
 # Review List Page & Review create Page
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('organization',)
 
 class SimpleUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('username', 'level')
+        fields = ('username',)
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    written_by = SimpleUserSerializer()
     class Meta:
         model = Review
         fields = '__all__'

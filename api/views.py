@@ -38,6 +38,7 @@ class OrganizationCafeteriaMenuDetailView(generics.RetrieveAPIView):
         return Response(menus.data, status=status.HTTP_200_OK)
 
 
+# Review CR(U)D
 class ReviewCreateView(generics.CreateAPIView):
     # queryset = Review.objects.all()
     serializer_class = ReviewSerializer
@@ -61,19 +62,34 @@ class DishDetailView(generics.RetrieveAPIView):
     serializer_class = DishSerializer
 
 
+class ReviewDeleteView(generics.DestroyAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+
+
+# organization selection page
 class UserUpdateView(generics.UpdateAPIView):
-    serializer_class = SimpleUserSerializer
+    serializer_class = UserUpdateSerializer
 
-    # def post(self, request, *args, **kwargs):
-    #     user_serializer = SimpleUserSerializer(data=request.data)
-    #     if user_serializer.is_valid():
+    def put(self, request, *args, **kwargs):
+        user_serializer = UserUpdateSerializer(data=request.data)
+        if user_serializer.is_valid():
+            user_serializer.save()
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# social login
+# for user drawer
+class UserDetailView(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+# for social login
 class KakaoLogin(SocialLoginView):
     adapter_class = KakaoOAuth2Adapter
 
 
 class FacebookLogin(SocialLoginView):
     adapter_class = FacebookOAuth2Adapter
-

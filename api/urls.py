@@ -15,7 +15,10 @@ urlpatterns = [
          '/time/<str:menu_time>/', OrganizationCafeteriaMenuDetailView.as_view()),
     path('review/create/', ReviewCreateView.as_view()),
     path('dish/<int:pk>/', DishDetailView.as_view()),
-    #path('organization/', OrganizationListView.as_view()),
+    path('review/delete/<int:pk>/', ReviewDeleteView.as_view()),
+    path('user/update/<int:pk>/', UserUpdateView.as_view()),
+    path('user/<int:pk>/', UserDetailView.as_view()),
+    # path('organization/', OrganizationListView.as_view()),
 
     #jwt and social login
     path('api-jwt-auth/', obtain_jwt_token),
