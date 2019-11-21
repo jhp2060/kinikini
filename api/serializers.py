@@ -1,6 +1,9 @@
+from django.contrib.auth.models import Group, User
 from rest_framework import serializers
 
-from .models import *
+from .models import Review, Dish, Menu, Cafeteria, Organization
+
+
 
 
 # Review List Page & Review create Page
@@ -12,7 +15,6 @@ class SimpleUserSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Review
         fields = '__all__'

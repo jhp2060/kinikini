@@ -1,6 +1,9 @@
 from datetime import date
 
+from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+from allauth.socialaccount.providers.kakao.views import KakaoOAuth2Adapter
 from django.shortcuts import render
+from rest_auth.registration.views import SocialLoginView
 from rest_framework import generics, status
 from rest_framework.response import Response
 
@@ -46,8 +49,9 @@ class ReviewCreateView(generics.CreateAPIView):
             review.dish.rating_sum += review.rating
             review.dish.rating_count += 1
             review.dish.save()
+            request.user.review_cnt += 1
+            request.user.save()
             return Response(status=status.HTTP_200_OK)
-
         else:
             return Response(review_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -55,3 +59,21 @@ class ReviewCreateView(generics.CreateAPIView):
 class DishDetailView(generics.RetrieveAPIView):
     queryset = Dish.objects.all()
     serializer_class = DishSerializer
+
+
+class UserUpdateView(generics.UpdateAPIView):
+    serializer_class = SimpleUserSerializer
+
+    # def post(self, request, *args, **kwargs):
+    #     user_serializer = SimpleUserSerializer(data=request.data)
+    #     if user_serializer.is_valid():
+
+
+# social login
+class KakaoLogin(SocialLoginView):
+    adapter_class = KakaoOAuth2Adapter
+
+
+class FacebookLogin(SocialLoginView):
+    adapter_class = FacebookOAuth2Adapter
+
