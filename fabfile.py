@@ -22,12 +22,14 @@ REMOTE_USER = envs['REMOTE_USER']
 REMOTE_PASSWORD = envs['REMOTE_PASSWORD']
 ALLOWED_HOSTS = envs['ALLOWED_HOSTS']
 SLACK_WEBHOOK_URL = envs['SLACK_WEBHOOK_URL']
+KEY_FILE_PATH = envs['KEY_FILE_PATH']
 
 env.user = REMOTE_USER
 username = env.user
 env.hosts = [REMOTE_HOST_SSH, ]
 env.password = REMOTE_PASSWORD
-env.key_filename = ["~/.ssh/jhp2060.pem", ]
+env.key_filename = [KEY_FILE_PATH, ]
+keypath = env.key_filename[0]
 
 virtualenv_folder = '/home/{}/.pyenv/versions/production'.format(env.user)
 project_folder = '/home/{}/srv/{}'.format(env.user, REPO_NAME)
@@ -89,7 +91,7 @@ def _upload_secrets_file():
     secret_file_dir = os.path.join(local_project_folder, 'secrets.json')
     remote_project_setting_dir = '{}@{}:{}'.format(REMOTE_USER, REMOTE_HOST_SSH,
                                                    os.path.join(project_folder, PROJECT_NAME))
-    local('scp {} {}'.format(secret_file_dir, remote_project_setting_dir))
+    local('scp -i {} {} {}'.format(keypath, secret_file_dir, remote_project_setting_dir))
 
 
 def _update_settings():
@@ -153,7 +155,7 @@ def deploy(skip_migrations=False):
     try:
         _send_deploy_message(message='*Deploy has been started.*')
         _get_latest_source()
-        #_upload_secrets_file()
+        _upload_secrets_file()
         _update_settings()
         _update_virtualenv()
         #_update_static_files()

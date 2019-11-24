@@ -30,8 +30,6 @@ urlpatterns = [
 
     path('rest-auth/kakao/', KakaoLogin.as_view(), name='kakao_login'),
     path('rest-auth/facebook/', FacebookLogin.as_view(), name='facebook_login'),
-
-
 ]
 
 

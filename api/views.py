@@ -1,5 +1,6 @@
 from datetime import date
 
+from django.contrib.auth import get_user_model
 from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 from allauth.socialaccount.providers.kakao.views import KakaoOAuth2Adapter
 from django.shortcuts import render
@@ -9,6 +10,8 @@ from rest_framework.response import Response
 
 from .models import Organization
 from .serializers import *
+
+User = get_user_model()
 
 
 class OrganizationCafeteriaMenuDetailView(generics.RetrieveAPIView):

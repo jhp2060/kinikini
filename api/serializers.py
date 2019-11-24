@@ -1,13 +1,18 @@
-from django.contrib.auth.models import Group, User
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from rest_framework import serializers
 
+User = get_user_model()
+
 from .models import Review, Dish, Menu, Cafeteria, Organization
+
 
 # User Drawer
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'organization', 'review_cnt',)
+
 
 # Review List Page & Review create Page
 
@@ -16,21 +21,23 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         model = User
         fields = ('organization',)
 
-class SimpleUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('username',)
-
 
 class ReviewSerializer(serializers.ModelSerializer):
-    written_by = SimpleUserSerializer()
+    class Meta:
+        model = Review
+        fields = '__all__'
+
+
+class ReviewUserSerializer(serializers.ModelSerializer):
+    written_by = UserSerializer
+
     class Meta:
         model = Review
         fields = '__all__'
 
 
 class DishSerializer(serializers.ModelSerializer):
-    reviews = ReviewSerializer(many=True)
+    reviews = ReviewUserSerializer(many=True)
 
     class Meta:
         model = Dish
@@ -39,6 +46,7 @@ class DishSerializer(serializers.ModelSerializer):
 
 # Cafeteria Page (Menu List)
 class SimpleDishSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Dish
         fields = ('name', 'rating_sum', 'rating_count')
@@ -46,10 +54,11 @@ class SimpleDishSerializer(serializers.ModelSerializer):
 
 class MenuSerializer(serializers.ModelSerializer):
     dishes = SimpleDishSerializer(many=True)
+    avg_rating = serializers.ReadOnlyField(source='avg_rating')
 
     class Meta:
         model = Menu
-        fields = '__all__'
+        exclude = ('rating_sum', 'rating_count')
 
 
 class CafeteriaSerializer(serializers.ModelSerializer):
@@ -67,3 +76,6 @@ class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
         fields = '__all__'
+
+
+# Dish create or update for Administer
