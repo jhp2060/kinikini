@@ -54,12 +54,28 @@ class CafeteriaDetailView(generics.RetrieveAPIView):
             return Response(data={'error': 'url invalid'},
                             status=status.HTTP_404_NOT_FOUND)
         cafeteria = self.get_object()
-        sikdans = cafeteria.sikdans.filter(date=sikdan_date,
-                                                 time=sikdan_time)
+        queryset = Sikdan.objects.filter(date=sikdan_date,
+                                         time=sikdan_time,
+                                         cafeteria=cafeteria)
+        sikdans = []
+        for sikdan in queryset:
+            ttmp = {}
+            ttmp['dishes'] = []
+            for dish in sikdan.dishes.all():
+                tmp = {}
+                tmp['name'] = dish.name
+                tmp['avg_rating'] = dish.avg_rating
+                ttmp['dishes'].append(tmp)
+            sikdans.append(ttmp)
 
-        # data = CafeteriaSerializer(sikdans=sikdans, many=True).data
-        ss = SikdanSerializer(sikdans, many=True)
-        return Response(ss.data, status=status.HTTP_200_OK)
+        result = {
+            'id' : cafeteria.id,
+            'organization' : cafeteria.organization.name,
+            'name' : cafeteria.name,
+            'sikdans' : sikdans
+        }
+        return Response(data=result, status=status.HTTP_200_OK)
+
 
 class sss(generics.RetrieveAPIView):
     queryset = Cafeteria.objects.all()
