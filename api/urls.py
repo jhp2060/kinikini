@@ -10,15 +10,21 @@ app_name = 'api'
 
 
 urlpatterns = [
+    # path('organization/<int:pk>'
+    #      '/<int:year>/<int:month>/<int:day>'
+    #      '/<str:sikdan_time>/', OrganizationSikdanDetailView.as_view()),
     path('organization/<int:pk>'
          '/<int:year>/<int:month>/<int:day>'
-         '/time/<str:menu_time>/', OrganizationCafeteriaMenuDetailView.as_view()),
+         '/<str:sikdan_time>/', CafeteriaListView.as_view()),
+    path('cafeteria/<int:pk>'
+         '/<int:year>/<int:month>/<int:day>'
+         '/<str:sikdan_time>/', CafeteriaDetailView.as_view()),
+    path('cafeteria/<int:pk>/', sss.as_view()),
     path('review/create/', ReviewCreateView.as_view()),
     path('dish/<int:pk>/', DishDetailView.as_view()),
     path('review/delete/<int:pk>/', ReviewDeleteView.as_view()),
     path('user/update/<int:pk>/', UserUpdateView.as_view()),
     path('user/<int:pk>/', UserDetailView.as_view()),
-    # path('organization/', OrganizationListView.as_view()),
 
     #jwt and social login
     path('api-jwt-auth/', obtain_jwt_token),

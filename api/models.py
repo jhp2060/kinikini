@@ -19,40 +19,15 @@ class User(AbstractUser):
         blank=True,
         null=True,
         default=None,
+        related_name='users'
     )
     review_cnt = models.IntegerField(default=0)
-    level = models.IntegerField(default=1)
 
     def __str__(self):
-        return "(" + str(self.pk) + ") " + str(self.username)
+        return "("+str(self.pk)+") "+str(self.username)
 
     class Meta:
         verbose_name_plural = "Users"
-
-
-class LikeMixinModel(models.Model):
-    liker_set = models.ManyToManyField(
-        User,
-        related_name='liked_%(class)s_set',
-        blank=True,
-    )
-
-    class Meta:
-        abstract = True
-
-    def count_like(self):
-        return self.liker_set.count()
-
-    def is_liked_by(self, user):
-        return self.liker_set.filter(pk=user.pk).exists()
-
-    def toggle_like(self, user):
-        liked = self.is_liked_by(user)
-        if liked:
-            self.liker_set.remove(user)
-        else:
-            self.liker_set.add(user)
-        return not liked
 
 
 class Cafeteria(models.Model):
@@ -64,15 +39,82 @@ class Cafeteria(models.Model):
     name = models.CharField(max_length=20)
 
     def __str__(self):
-        return '(' + str(self.pk) + ") " + str(self.organization.name) + " " + str(self.name)
+        return '('+str(self.pk)+") "+\
+               str(self.organization.name)+" "+str(self.name)
 
 
-class Menu(models.Model):
+class Dish(models.Model):
+    cafeteria = models.ForeignKey(
+        Cafeteria,
+        on_delete=models.CASCADE,
+        related_name='dishes'
+    )
+    name = models.CharField(max_length=20)
+    is_new = models.BooleanField(default=True)
+    frequency = models.IntegerField(default=0)
+    recent_date = models.DateField(auto_now=True)
+    rating_sum = models.BigIntegerField(default=0)
+    rating_count = models.BigIntegerField(default=0)
+    avg_rating = models.FloatField(default=0)
+
+    class Meta:
+        verbose_name_plural = "dishes"
+
+    def exists_same_dish(self, cafeteria_id, dish_name):
+        if self.cafeteria.pk == cafeteria_id \
+                and self.name == dish_name:
+            return True
+        else : return False
+
+
+    def __str__(self):
+        return "(" + str(self.pk) + ") " + str(self.name)
+
+
+class Review(models.Model):
+    rating = models.IntegerField(default=0)
+    written_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='reviews',
+    )
+    dish = models.ForeignKey(
+        Dish,
+        on_delete=models.CASCADE,
+        related_name='reviews'
+    )
+    comment = models.TextField(max_length=500, default="먹을만해요.")
+    written_at = models.DateTimeField(auto_now_add=True)
+    #image = models.ImageField(default=None, blank=True)
+
+    def is_already_written(self, writer, date):
+        return (writer == self.written_by) and (date == self.written_at)
+
+    def __str__(self):
+        return self.dish.cafeteria.organization.name+" "\
+               +self.dish.cafeteria.name+" "\
+               +self.dish.name+"에 대한 "+self.written_by.username+"의 리뷰"
+
+
+
+# exists as a handler
+class Sikdan(models.Model):
+    organization = models.ForeignKey(
+        Organization,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='sikdans'
+    )
     cafeteria = models.ForeignKey(
         Cafeteria,
         on_delete=models.SET_NULL,
         null=True,
-        related_name='menus'
+        related_name='sikdans'
+    )
+    dishes = models.ManyToManyField(
+        Dish,
+        related_name='sikdans',
     )
     TIME_CHOICES = (
         ("BREAKFAST", "BREAKFAST"),
@@ -87,74 +129,57 @@ class Menu(models.Model):
     date = models.DateField()
 
     def __str__(self):
-        return str(self.cafeteria.name)+" "+str(self.date)+" "+self.time
+        return "("+str(self.pk)+") "+self.cafeteria.organization.name+\
+               " "+str(self.cafeteria.name)+\
+               " "+str(self.date)+" "+self.time
 
 
-class Dish(LikeMixinModel):
-    menus = models.ManyToManyField(
-        Menu,
-        related_name='dishes',
-    )
-    name = models.CharField(max_length=20)
-    is_new = models.BooleanField(default=True)
-    recent_date = models.DateField(auto_now=True)
-    frequency = models.IntegerField(default=1)
-    is_bab_guk_kimchi = models.BooleanField(default=False)
-    rating_sum = models.BigIntegerField(default=0)
-    rating_count = models.BigIntegerField(default=0)
 
-    class Meta:
-        verbose_name_plural = "dishes"
-
-    def avg_rating(self):
-        return self.rating_sum / self.rating_count
-
-    def __str__(self):
-        return "(" + str(self.pk) + ") " + str(self.name)
-
-
-class Review(LikeMixinModel):
-    rating = models.IntegerField(default=0)
-    written_by = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name='reviews',
-    )
-    dish = models.ForeignKey(
-        Dish,
-        on_delete=models.CASCADE,
-        related_name='reviews'
-    )
-    comment = models.TextField(max_length=300, default="먹을만해요.")
-    written_at = models.DateTimeField(auto_now=True)
-    image = models.ImageField(default=None, blank=True)
-
-    def is_already_written(self, writer, date):
-        return (writer == self.written_by) and (date == self.written_at)
-
-
-class FavoriteDish(models.Model):
-    favored_by = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='favorite_dishes'
-    )
-    dish = models.ForeignKey(
-        Dish,
-        on_delete=models.CASCADE,
-        related_name='favorite_dishes'
-    )
-
-
-class FavoriteCafeteria(models.Model):
-    favored_by = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='favorite_cafeteria'
-    )
-    cafeteria = models.ForeignKey(
-        Cafeteria,
-        on_delete=models.CASCADE,
-        related_name='favorite_cafeteria'
-    )
+# class FavoriteDish(models.Model):
+#     favored_by = models.ForeignKey(
+#         User,
+#         on_delete=models.CASCADE,
+#         related_name='favorite_dishes'
+#     )
+#     dish = models.ForeignKey(
+#         Dish,
+#         on_delete=models.CASCADE,
+#         related_name='favorite_dishes'
+#     )
+#
+#
+# class FavoriteCafeteria(models.Model):
+#     favored_by = models.ForeignKey(
+#         User,
+#         on_delete=models.CASCADE,
+#         related_name='favorite_cafeteria'
+#     )
+#     cafeteria = models.ForeignKey(
+#         Cafeteria,
+#         on_delete=models.CASCADE,
+#         related_name='favorite_cafeteria'
+#     )
+#
+# class LikeMixinModel(models.Model):
+#     liker_set = models.ManyToManyField(
+#         User,
+#         related_name='liked_%(class)s_set',
+#         blank=True,
+#     )
+#
+#     class Meta:
+#         abstract = True
+#
+#     def count_like(self):
+#         return self.liker_set.count()
+#
+#     def is_liked_by(self, user):
+#         return self.liker_set.filter(pk=user.pk).exists()
+#
+#     def toggle_like(self, user):
+#         liked = self.is_liked_by(user)
+#         if liked:
+#             self.liker_set.remove(user)
+#         else:
+#             self.liker_set.add(user)
+#         return not liked

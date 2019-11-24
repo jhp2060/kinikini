@@ -4,7 +4,51 @@ from rest_framework import serializers
 
 User = get_user_model()
 
-from .models import Review, Dish, Menu, Cafeteria, Organization
+from .models import Review, Dish, Sikdan, Cafeteria, Organization
+
+
+# Cafeteria List Page
+
+class SimpleDishSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Dish
+        fields = ('name', 'avg_rating',)
+
+
+class SikdanSerializer(serializers.ModelSerializer):
+    # dishes = serializers.SerializerMethodField()
+    dishes = SimpleDishSerializer(many=True)
+
+    class Meta:
+        model = Sikdan
+        fields = '__all__'
+
+    def get_dishes(self, instance):
+        sorted_dishes = instance.dishes.all().order_by('-avg_rating')
+        return SimpleDishSerializer(sorted_dishes, many=True).data
+
+
+class CafeteriaSerializer(serializers.ModelSerializer):
+    # sikdans = serializers.SerializerMethodField()
+    sikdans = SikdanSerializer(many=True)
+
+    class Meta:
+        model = Cafeteria
+        fields = '__all__'
+
+    def get_sikdans(self, instance):
+        # sorted_sikdans = instance.dishes.all().order_by('-dishes[0].avg_rating')
+        sorted_sikdans = instance.dishes.all()
+        sorted_sikdans = sorted_sikdans[:3]
+        return SikdanSerializer(sorted_sikdans, many=True).data
+
+
+class OrganizationSerializer(serializers.ModelSerializer):
+    cafeterias = CafeteriaSerializer(many=True)
+
+    class Meta:
+        model = Organization
+        fields = '__all__'
 
 
 # User Drawer
@@ -43,39 +87,7 @@ class DishSerializer(serializers.ModelSerializer):
         model = Dish
         fields = '__all__'
 
-
-# Cafeteria Page (Menu List)
-class SimpleDishSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = Dish
-        fields = ('name', 'rating_sum', 'rating_count')
-
-
-class MenuSerializer(serializers.ModelSerializer):
-    dishes = SimpleDishSerializer(many=True)
-    avg_rating = serializers.ReadOnlyField(source='avg_rating')
-
-    class Meta:
-        model = Menu
-        exclude = ('rating_sum', 'rating_count')
-
-
-class CafeteriaSerializer(serializers.ModelSerializer):
-    menus = MenuSerializer(many=True)
-
-    class Meta:
-        model = Cafeteria
-        fields = '__all__'
-
-
-# Cafeteria List Page
-class OrganizationSerializer(serializers.ModelSerializer):
-    cafeterias = CafeteriaSerializer(many=True)
-
-    class Meta:
-        model = Organization
-        fields = '__all__'
+# Cafeteria Page (Sikdan List)
 
 
 # Dish create or update for Administer

@@ -66,7 +66,7 @@ def _send_deploy_message(message=''):
     branch = local("git branch | grep \\* | cut -d ' ' -f2", capture=True)
     message = '{}\n{}/{}\ncurrent commit `{}`'.format(message, repo, branch, current_commit)
 
-    _send_slack_message(message)
+    #_send_slack_message(message)
 
 
 def _send_slack_message(message=''):
@@ -166,7 +166,8 @@ def deploy(skip_migrations=False):
         _restart_nginx()
         _send_deploy_message(message='*Deploy succeed.*')
     except SystemExit as e:
-        _send_slack_message(message='*Deploy failed.*\n<@jhp2060>')
+        print(green('fuck'))
+        #_send_slack_message(message='*Deploy failed.*\n<@jhp2060>')
 
 
 def refresh():

@@ -14,31 +14,85 @@ from .serializers import *
 User = get_user_model()
 
 
-class OrganizationCafeteriaMenuDetailView(generics.RetrieveAPIView):
-    queryset = Organization.objects.all()
-    serializer_class = OrganizationSerializer
+class CafeteriaListView(generics.ListAPIView):
+    queryset = Cafeteria.objects.all()
+    serializer_class = CafeteriaSerializer
+
+    def get(self, request, *args, **kwargs):
+        id = self.kwargs.get('pk')
+        year = kwargs.get('year')
+        month = kwargs.get('month')
+        day = kwargs.get('day')
+        if year is not None and month is not None and day is not None:
+            sikdan_date = date(year, month, day)
+        else:
+            sikdan_date = None
+        sikdan_time = kwargs.get('sikdan_time')
+        if sikdan_time is None or sikdan_date is None:
+            return Response(data={'error': 'url invalid'},
+                            status=status.HTTP_404_NOT_FOUND)
+        sikdans = Sikdan.objects.filter(date=sikdan_date, time=sikdan_date,
+                                       organization=id)
+        data = CafeteriaSerializer(sikdans=sikdans).data
+        return Response(data, status=status.HTTP_200_OK)
+
+
+class CafeteriaDetailView(generics.RetrieveAPIView):
+    queryset = Cafeteria.objects.all()
+    serializer_class = CafeteriaSerializer
 
     def get(self, request, *args, **kwargs):
         year = kwargs.get('year')
         month = kwargs.get('month')
         day = kwargs.get('day')
         if year is not None and month is not None and day is not None:
-            menu_date = date(year, month, day)
+            sikdan_date = date(year, month, day)
         else:
-            menu_date = None
-        menu_time = kwargs.get('menu_time')
-        if menu_time is None or menu_date is None:
+            sikdan_date = None
+        sikdan_time = kwargs.get('sikdan_time')
+        if sikdan_time is None or sikdan_date is None:
             return Response(data={'error': 'url invalid'},
                             status=status.HTTP_404_NOT_FOUND)
-        organization = self.get_object()
-        cafeterias = organization.cafeterias.all()
-        menus = []
-        for c in cafeterias:
-            for menu in Menu.objects.filter(cafeteria_id=c.pk):
-                if menu.time == menu_time and menu.date == menu_date:
-                    menus.append(menu)
-        menus = MenuSerializer(menus, many=True)
-        return Response(menus.data, status=status.HTTP_200_OK)
+        cafeteria = self.get_object()
+        sikdans = cafeteria.sikdans.filter(date=sikdan_date,
+                                                 time=sikdan_time)
+
+        # data = CafeteriaSerializer(sikdans=sikdans, many=True).data
+        ss = SikdanSerializer(sikdans, many=True)
+        return Response(ss.data, status=status.HTTP_200_OK)
+
+class sss(generics.RetrieveAPIView):
+    queryset = Cafeteria.objects.all()
+    serializer_class = CafeteriaSerializer
+
+# class OrganizationSikdanDetailView(generics.RetrieveAPIView):
+#     queryset = Organization.objects.all()
+#     serializer_class = OrganizationSerializer
+#
+#     def get(self, request, *args, **kwargs):
+#         year = kwargs.get('year')
+#         month = kwargs.get('month')
+#         day = kwargs.get('day')
+#         if year is not None and month is not None and day is not None:
+#             sikdan_date = date(year, month, day)
+#         else:
+#             sikdan_date = None
+#         sikdan_time = kwargs.get('sikdan_time')
+#         if sikdan_time is None or sikdan_date is None:
+#             return Response(data={'error': 'url invalid'},
+#                             status=status.HTTP_404_NOT_FOUND)
+#         organization = self.get_object()
+#         cafeterias = organization.cafeterias.all()
+#         cs = []
+#         for c in cafeterias:
+#             ss = []
+#             for sikdan in c.sikdans.all():
+#                 if sikdan.date == sikdan_date and sikdan.time == sikdan_time:
+#                     ss.append(sikdan)
+#             ss = SikdanSerializer(ss, many=True)
+#             cs.append(ss)
+#         cafeterias = CafeteriaSerializer(cs, many=True)
+#         return Response(cafeterias.data, status=status.HTTP_200_OK)
 
 
 # Review CR(U)D

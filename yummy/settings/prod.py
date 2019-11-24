@@ -8,7 +8,7 @@ DATABASES = {
     'default' : secrets['DB_SETTINGS']['PRODUCTION']
 }
 
-CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITE_LIST = [
     'localhost:8000',
 ]
