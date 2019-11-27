@@ -71,10 +71,11 @@ class CafeteriaDetailView(generics.RetrieveAPIView):
         cafeteria = self.get_object()
         queryset = Sikdan.objects.filter(date=sikdan_date,
                                          cafeteria=cafeteria)
-        sikdans = []
+        BREAKFAST = []
+        LUNCH = []
+        DINNER = []
         for sikdan in queryset:
             s = {}
-            s['time'] = sikdan.time
             dishes = []
             for dish in sikdan.dishes.all():
                 tmp = {
@@ -85,14 +86,17 @@ class CafeteriaDetailView(generics.RetrieveAPIView):
                 dishes.append(tmp)
             dishes = sorted(dishes, key=lambda x: (x['avg_rating']), reverse=True)
             s['dishes'] = dishes
-            sikdans.append(s)
-        sikdans = sorted(sikdans, key=lambda x: (x['time']))
+            if sikdan.time is 'BREAKFAST': BREAKFAST.append(s)
+            elif sikdan.time is 'LUNCH': LUNCH.append(s)
+            elif sikdan.time is 'DINNER': DINNER.append(s)
 
         result = {
             'id': cafeteria.id,
             'organization': cafeteria.organization.name,
             'name':  cafeteria.name,
-            'sikdans': sikdans
+            'BREAKFAST': BREAKFAST,
+            'LUNCH': LUNCH,
+            'DINNER': DINNER
         }
         return Response(data=result, status=status.HTTP_200_OK)
 
