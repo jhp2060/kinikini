@@ -86,9 +86,9 @@ class CafeteriaDetailView(generics.RetrieveAPIView):
                 dishes.append(tmp)
             dishes = sorted(dishes, key=lambda x: (x['avg_rating']), reverse=True)
             s['dishes'] = dishes
-            if sikdan.time is 'BREAKFAST': BREAKFAST.append(s)
-            elif sikdan.time is 'LUNCH': LUNCH.append(s)
-            elif sikdan.time is 'DINNER': DINNER.append(s)
+            if sikdan.time == 'BREAKFAST': BREAKFAST.append(s)
+            elif sikdan.time == 'LUNCH': LUNCH.append(s)
+            elif sikdan.time == 'DINNER': DINNER.append(s)
 
         result = {
             'id': cafeteria.id,
