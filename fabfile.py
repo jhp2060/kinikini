@@ -66,7 +66,7 @@ def _send_deploy_message(message=''):
     branch = local("git branch | grep \\* | cut -d ' ' -f2", capture=True)
     message = '{}\n{}/{}\ncurrent commit `{}`'.format(message, repo, branch, current_commit)
 
-    #_send_slack_message(message)
+    # _send_slack_message(message)
 
 
 def _send_slack_message(message=''):
@@ -90,8 +90,8 @@ def _upload_secrets_file():
     print(green('_upload_secrets_file'))
     secret_file_dir = os.path.join(local_project_folder, 'secrets.json')
     remote_project_setting_dir = '{}@{}:{}'.format(REMOTE_USER, REMOTE_HOST_SSH,
-                                                   os.path.join(project_folder, PROJECT_NAME))
-    local('scp -i {} {} {}'.format(keypath, secret_file_dir, remote_project_setting_dir))
+                                                   project_folder+'/'+PROJECT_NAME)
+    local('scp -i {} {} {}'.format(keypath, secret_file_dir, remote_project_setting_dir+"/secrets.json"))
 
 
 def _update_settings():
@@ -153,7 +153,7 @@ def deploy(skip_migrations=False):
     _check_if_migration_needed(skip_migrations)
     _local_test()
     try:
-        _send_deploy_message(message='*Deploy has been started.*')
+        # _send_deploy_message(message='*Deploy has been started.*')
         _get_latest_source()
         _upload_secrets_file()
         _update_settings()
@@ -164,10 +164,10 @@ def deploy(skip_migrations=False):
         _grant_uwsgi()
         _restart_uwsgi()
         _restart_nginx()
-        _send_deploy_message(message='*Deploy succeed.*')
+        # _send_deploy_message(message='*Deploy succeed.*')
     except SystemExit as e:
-        print(green('fuck'))
-        #_send_slack_message(message='*Deploy failed.*\n<@jhp2060>')
+        green('_f_u_c_k')
+        # _send_slack_message(message='*Deploy failed.*\n<@jhp2060>')
 
 
 def refresh():
