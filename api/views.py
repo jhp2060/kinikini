@@ -80,6 +80,8 @@ class CafeteriaDetailView(generics.RetrieveAPIView):
         sikdans = []
         for sikdan in queryset:
             s = {}
+            bap = {}
+            kimchi = {}
             dishes = []
             for dish in sikdan.dishes.all():
                 if "밥" in dish.name \
@@ -89,15 +91,15 @@ class CafeteriaDetailView(generics.RetrieveAPIView):
                     bap = {
                         'id': dish.id,
                         'name': dish.name,
+                        'avg_rating': -1,
                     }
-                    s['bap'] = bap
                     continue
                 elif "김치" in dish.name or "단무지" in dish.name:
                     kimchi = {
                         'id': dish.id,
-                        'name': dish.name
+                        'name': dish.name,
+                        'avg_rating': -1,
                     }
-                    s['kimchi'] = kimchi
                     continue
                 tmp = {
                     'id': dish.id,
@@ -106,6 +108,8 @@ class CafeteriaDetailView(generics.RetrieveAPIView):
                 }
                 dishes.append(tmp)
             dishes = sorted(dishes, key=lambda x: (x['avg_rating']), reverse=True)
+            if len(kimchi) > 0 : dishes.insert(0, kimchi)
+            if len(bap) > 0: dishes.insert(0, bap)
             s['dishes'] = dishes
             sikdans.append(s)
 
