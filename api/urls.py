@@ -14,7 +14,8 @@ urlpatterns = [
          '/<int:year>/<int:month>/<int:day>'
          '/<str:sikdan_time>/', CafeteriaListView.as_view()),
     path('cafeteria/<int:pk>'
-         '/<int:year>/<int:month>/<int:day>/', CafeteriaDetailView.as_view()),
+         '/<int:year>/<int:month>/<int:day>'
+         '/<str:sikdan_time>/', CafeteriaDetailView.as_view()),
     path('review/create/', ReviewCreateView.as_view()),
     path('dish/<int:pk>/', DishDetailView.as_view()),
     path('user/update/<int:pk>/', UserUpdateView.as_view()),

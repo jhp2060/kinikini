@@ -10,7 +10,6 @@ from .models import Review, Dish, Sikdan, Cafeteria, Organization
 # Review List Page & Review create Page
 
 
-
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
@@ -39,6 +38,7 @@ class ReviewUserSerializer(serializers.ModelSerializer):
         model = Review
         fields = '__all__'
 
+
 class SimpleCafeteriaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cafeteria
@@ -52,3 +52,9 @@ class DishSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dish
         fields = '__all__'
+
+
+class DishUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Dish
+        fields = ('id', 'name')

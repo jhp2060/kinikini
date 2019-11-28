@@ -17,6 +17,7 @@ User = get_user_model()
 
 class CafeteriaListView(generics.ListAPIView):
     queryset = Cafeteria.objects.all()
+
     # serializer_class = CafeteriaSerializer
 
     def get(self, request, *args, **kwargs):
@@ -56,6 +57,7 @@ class CafeteriaListView(generics.ListAPIView):
 
 class CafeteriaDetailView(generics.RetrieveAPIView):
     queryset = Cafeteria.objects.all()
+
     # serializer_class = CafeteriaSerializer
 
     def get(self, request, *args, **kwargs):
@@ -64,39 +66,54 @@ class CafeteriaDetailView(generics.RetrieveAPIView):
         day = kwargs.get('day')
         if year is not None and month is not None and day is not None:
             sikdan_date = date(year, month, day)
-        else: sikdan_date = None
-        if sikdan_date is None:
+        else:
+            sikdan_date = None
+        sikdan_time = kwargs.get('sikdan_time')
+        if sikdan_time is None or sikdan_date is None:
             return Response(data={'error': 'url invalid'},
                             status=status.HTTP_404_NOT_FOUND)
+
         cafeteria = self.get_object()
         queryset = Sikdan.objects.filter(date=sikdan_date,
-                                         cafeteria=cafeteria)
-        BREAKFAST = []
-        LUNCH = []
-        DINNER = []
+                                         cafeteria=cafeteria,
+                                         time=sikdan_time)
+        sikdans = []
         for sikdan in queryset:
             s = {}
             dishes = []
             for dish in sikdan.dishes.all():
+                if "밥" in dish.name \
+                        and "볶음밥" not in dish.name \
+                        and "덮밥" not in dish.name \
+                        and "비빔밥" not in dish.name:
+                    bap = {
+                        'id': dish.id,
+                        'name': dish.name,
+                    }
+                    s['bap'] = bap
+                    continue
+                elif "김치" in dish.name or "단무지" in dish.name:
+                    kimchi = {
+                        'id': dish.id,
+                        'name': dish.name
+                    }
+                    s['kimchi'] = kimchi
+                    continue
                 tmp = {
-                    'id':dish.id,
+                    'id': dish.id,
                     'name': dish.name,
                     'avg_rating': dish.avg_rating,
                 }
                 dishes.append(tmp)
             dishes = sorted(dishes, key=lambda x: (x['avg_rating']), reverse=True)
             s['dishes'] = dishes
-            if sikdan.time == 'BREAKFAST': BREAKFAST.append(s)
-            elif sikdan.time == 'LUNCH': LUNCH.append(s)
-            elif sikdan.time == 'DINNER': DINNER.append(s)
+            sikdans.append(s)
 
         result = {
             'id': cafeteria.id,
             'organization': cafeteria.organization.name,
-            'name':  cafeteria.name,
-            'BREAKFAST': BREAKFAST,
-            'LUNCH': LUNCH,
-            'DINNER': DINNER
+            'name': cafeteria.name,
+            'sikdans': sikdans,
         }
         return Response(data=result, status=status.HTTP_200_OK)
 
@@ -126,6 +143,16 @@ class ReviewCreateView(generics.CreateAPIView):
 class DishDetailView(generics.RetrieveAPIView):
     queryset = Dish.objects.all()
     serializer_class = DishSerializer
+
+
+class DishUpdateView(generics.UpdateAPIView):
+    serializers = DishSerializer
+
+    def put(self, request, *args, **kwargs):
+        dish_serializer = DishUpdateSerializer(data=request.data)
+        if not dish_serializer.is_valid():
+            return Response(dish_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 # organization selection
