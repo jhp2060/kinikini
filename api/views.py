@@ -1,13 +1,12 @@
+import json
 from datetime import date
 
-from django.contrib.auth import get_user_model
 from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 from allauth.socialaccount.providers.kakao.views import KakaoOAuth2Adapter
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
 from rest_auth.registration.views import SocialLoginView
 from rest_framework import generics, status
 from rest_framework.response import Response
+from django.contrib.auth import get_user_model
 
 from .models import Organization
 from .serializers import *
@@ -125,9 +124,11 @@ class CafeteriaDetailView(generics.RetrieveAPIView):
 class ReviewCreateView(generics.CreateAPIView):
     # queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+    #parser_classes = (JSONParser,)
 
     def post(self, request, *args, **kwargs):
-        review_serializer = ReviewSerializer(data=request.data)
+        s = list(request.data.keys())[0]
+        review_serializer = ReviewSerializer(data=json.loads(s))
         if review_serializer.is_valid():
             review = review_serializer.save()
             review.dish.rating_sum += review.rating
