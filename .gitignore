@@ -6,6 +6,7 @@ yummy/settings_prod.py
 yummy/settings/__init__.py
 yummy/settings_dev.py
 api/management/commands/excel_file.json
+api/migrations/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
