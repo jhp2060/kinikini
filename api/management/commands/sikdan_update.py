@@ -51,6 +51,8 @@ class Command(BaseCommand):
                     sikdan = ss.save()
                 else :
                     print("\n\n****sikdan data invalid****\n")
+                    print("organization_id="+row_values[6]+"cafeteria_id"+row_values[5])
+                    print("\n"+row_values[3]+" "+row_values[7]+"\n")
                     exit()
             else :
                 if sikdan == None:
