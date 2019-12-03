@@ -92,7 +92,9 @@ class CafeteriaDetailView(generics.RetrieveAPIView):
                     if "볶음밥" in dish.name or "덮밥" in dish.name or "비빔밥" in dish.name:
                         bap['avg_rating'] = dish.avg_rating
                     continue
-                elif "김치" in dish.name or "단무지" in dish.name:
+                elif "김치" in dish.name or "단무지" in dish.name\
+                        or "깍두기" in dish.name or "피클" in dish.name\
+                        or "석박지" in dish.name :
                     kimchi = {
                         'id': dish.id,
                         'name': dish.name,
@@ -106,7 +108,7 @@ class CafeteriaDetailView(generics.RetrieveAPIView):
                 }
                 dishes.append(tmp)
             dishes = sorted(dishes, key=lambda x: (x['avg_rating']), reverse=True)
-            if len(kimchi) > 0 : dishes.insert(0, kimchi)
+            if len(kimchi) > 0: dishes.insert(0, kimchi)
             if len(bap) > 0: dishes.insert(0, bap)
             s['dishes'] = dishes
             sikdans.append(s)
@@ -124,13 +126,11 @@ class CafeteriaDetailView(generics.RetrieveAPIView):
 class ReviewCreateView(generics.CreateAPIView):
     # queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    #parser_classes = (JSONParser,)
+
+    # parser_classes = (JSONParser,)
 
     def post(self, request, *args, **kwargs):
         s = request.body.decode('utf-8')
-        # print("\n\n*********** ")
-        # print(s)
-        # print("***************\n\n")
         review_serializer = ReviewSerializer(data=json.loads(s))
         if review_serializer.is_valid():
             review = review_serializer.save()
@@ -150,16 +150,6 @@ class ReviewCreateView(generics.CreateAPIView):
 class DishDetailView(generics.RetrieveAPIView):
     queryset = Dish.objects.all()
     serializer_class = DishSerializer
-
-
-class DishUpdateView(generics.UpdateAPIView):
-    serializers = DishSerializer
-
-    def put(self, request, *args, **kwargs):
-        dish_serializer = DishUpdateSerializer(data=request.data)
-        if not dish_serializer.is_valid():
-            return Response(dish_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 # organization selection

@@ -51,21 +51,13 @@ class Dish(models.Model):
     )
     name = models.CharField(max_length=20)
     is_new = models.BooleanField(default=True)
-    frequency = models.IntegerField(default=0)
-    recent_date = models.DateField(auto_now=True)
+    frequency = models.IntegerField(default=1)
     rating_sum = models.BigIntegerField(default=0)
     rating_count = models.BigIntegerField(default=0)
     avg_rating = models.FloatField(default=0)
 
     class Meta:
         verbose_name_plural = "dishes"
-
-    def exists_same_dish(self, cafeteria_id, dish_name):
-        if self.cafeteria.pk == cafeteria_id \
-                and self.name == dish_name:
-            return True
-        else : return False
-
 
     def __str__(self):
         return "(" + str(self.pk) + ") " + str(self.name)

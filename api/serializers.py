@@ -57,4 +57,10 @@ class DishSerializer(serializers.ModelSerializer):
 class DishUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dish
-        fields = ('id', 'name')
+        fields = ('name',  'cafeteria')
+
+
+class SikdanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sikdan
+        fields = ('time', 'date','organization','cafeteria')
