@@ -130,8 +130,7 @@ class ReviewCreateView(generics.CreateAPIView):
     # parser_classes = (JSONParser,)
 
     def post(self, request, *args, **kwargs):
-        s = request.body.decode('utf-8')
-        review_serializer = ReviewSerializer(data=json.loads(s))
+        review_serializer = ReviewSerializer(data=request.data)
         if review_serializer.is_valid():
             review = review_serializer.save()
             review.dish.rating_sum += review.rating
