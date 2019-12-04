@@ -1,0 +1,1 @@
+<QueryDict: {'csrfmiddlewaretoken': ['hRn5ddTHMShX482NFdF8JtK0LfZRgaD9M8IPuRGPSuIiwDicym6eQw8gFmwYbRNu'], 'rating': ['2'], 'comment': ['asd'], 'written_by': ['1'], 'dish': ['37']}>

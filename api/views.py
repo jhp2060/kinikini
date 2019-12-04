@@ -130,6 +130,9 @@ class ReviewCreateView(generics.CreateAPIView):
     # parser_classes = (JSONParser,)
 
     def post(self, request, *args, **kwargs):
+        print(request.data)
+        f = open("./log.txt", "w", encoding="utf-8")
+        f.write(str(request.data))
         review_serializer = ReviewSerializer(data=request.data)
         if review_serializer.is_valid():
             review = review_serializer.save()
