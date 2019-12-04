@@ -55,6 +55,11 @@ class Dish(models.Model):
     rating_sum = models.BigIntegerField(default=0)
     rating_count = models.BigIntegerField(default=0)
     avg_rating = models.FloatField(default=0)
+    pt1_cnt =models.IntegerField(default=0)
+    pt2_cnt = models.IntegerField(default=0)
+    pt3_cnt = models.IntegerField(default=0)
+    pt4_cnt = models.IntegerField(default=0)
+    pt5_cnt = models.IntegerField(default=0)
 
     class Meta:
         verbose_name_plural = "dishes"
@@ -65,6 +70,7 @@ class Dish(models.Model):
 
 class Review(models.Model):
     rating = models.IntegerField(default=0)
+    nickname = models.CharField(max_length=20, default='익명')
     written_by = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,

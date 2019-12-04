@@ -130,16 +130,22 @@ class ReviewCreateView(generics.CreateAPIView):
     # parser_classes = (JSONParser,)
 
     def post(self, request, *args, **kwargs):
-        print(request.data)
-        f = open("./log.txt", "w", encoding="utf-8")
-        f.write(str(request.data))
         review_serializer = ReviewSerializer(data=request.data)
         if review_serializer.is_valid():
             review = review_serializer.save()
             review.dish.rating_sum += review.rating
+            if review.rating == 1:
+                review.dish.pt1_cnt += 1
+            elif review.rating == 2:
+                review.dish.pt2_cnt += 1
+            elif review.rating == 3:
+                review.dish.pt3_cnt += 1
+            elif review.rating == 4:
+                review.dish.pt4_cnt += 1
+            elif review.rating == 5:
+                review.dish.pt5_cnt += 1
             review.dish.rating_count += 1
-            review.dish.avg_rating \
-                = review.dish.rating_sum / review.dish.rating_count
+            review.dish.avg_rating = review.dish.rating_sum / review.dish.rating_count
             review.dish.save()
             review.written_by.review_cnt += 1
             review.written_by.save()
