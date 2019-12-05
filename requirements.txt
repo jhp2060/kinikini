@@ -1,10 +1,11 @@
+asgiref==3.2.3
 bcrypt==3.1.7
 certifi==2019.9.11
 cffi==1.13.2
 chardet==3.0.4
 cryptography==2.8
 defusedxml==0.6.0
-Django==2.2.7
+Django==3.0
 django-allauth==0.40.0
 django-cors-headers==3.2.0
 django-rest-auth==0.9.5
