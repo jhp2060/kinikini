@@ -10,4 +10,4 @@
 
 🍕 AWS RDS / PostgresSQL
 
-🥓 Copyright ⓒ CEOS 10th. team porsche
+🥓 Copyright ⓒ [CEOS](http://ceos.or.kr/) 10th. team porsche
