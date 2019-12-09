@@ -1,6 +1,6 @@
 # 끼니끼니 Beta KINIKINI
 
-🍚 kinikini.kr
+🍚 [끼니끼니 베타 웹 서비스](kinikini.kr)
 
 🍜 이화여자대학교의 모든 학교 식당의 메뉴 별 리뷰와 평점 기능을 제공하는 웹 서비스 
 
