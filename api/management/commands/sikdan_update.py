@@ -62,9 +62,24 @@ class Command(BaseCommand):
                     # noinspection PyStatementEffect
                     dish = Dish.objects.filter(name=row_values[0], cafeteria=row_values[5])
                     if not dish.exists():
+                        dish_name = row_values[0]
+                        avg_rating = 0
+
+                        if "밥" in dish_name:
+                            if "볶음밥" in dish_name or "덮밥" in dish_name\
+                                    or "비빔밥" in dish_name:
+                                pass
+                            else:
+                                avg_rating = -1
+                        elif "김치" in dish_name or "단무지" in dish_name \
+                                or "깍두기" in dish_name or "피클" in dish_name \
+                                or "석박지" in dish_name:
+                            avg_rating = -1
+
                         dish = {
                             'name': row_values[0],
                             'cafeteria': row_values[5],
+                            'avg_rating': avg_rating,
                         }
                         ds = DishUpdateSerializer(data=dish)
                         if ds.is_valid():

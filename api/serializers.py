@@ -33,10 +33,30 @@ class UserSerializer(serializers.ModelSerializer):
 # dish detail and review list
 class ReviewUserSerializer(serializers.ModelSerializer):
     written_by = UserSerializer()
+    year = serializers.SerializerMethodField()
+    month = serializers.SerializerMethodField()
+    day = serializers.SerializerMethodField()
+    hour = serializers.SerializerMethodField()
+    minute = serializers.SerializerMethodField()
+
+    def get_year(self, obj):
+        return obj.written_at.year
+
+    def get_month(self, obj):
+        return obj.written_at.month
+
+    def get_day(self, obj):
+        return obj.written_at.day
+
+    def get_hour(self, obj):
+        return obj.written_at.hour
+
+    def get_minute(self, obj):
+        return obj.written_at.minute
 
     class Meta:
         model = Review
-        fields = '__all__'
+        exclude = ('written_at',)
 
 
 class SimpleCafeteriaSerializer(serializers.ModelSerializer):
@@ -57,7 +77,7 @@ class DishSerializer(serializers.ModelSerializer):
 class DishUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dish
-        fields = ('name',  'cafeteria')
+        fields = ('name',  'cafeteria', 'avg_rating',)
 
 
 class SikdanSerializer(serializers.ModelSerializer):
