@@ -36,7 +36,7 @@ class ReviewUserSerializer(serializers.ModelSerializer):
     timestamp = serializers.SerializerMethodField()
 
     def get_timestamp(self,obj):
-        return obj.written_at.timestamp()
+        return obj.written_at.timestamp() * 1000
 
     class Meta:
         model = Review
