@@ -67,7 +67,8 @@ class Command(BaseCommand):
 
                         if "밥" in dish_name:
                             if "볶음밥" in dish_name or "덮밥" in dish_name\
-                                    or "비빔밥" in dish_name:
+                                    or "비빔밥" in dish_name or "알밥" in dish_name\
+                                    or "김치밥" in dish_name:
                                 pass
                             else:
                                 avg_rating = -1

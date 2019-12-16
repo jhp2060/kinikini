@@ -84,7 +84,7 @@ class CafeteriaDetailView(generics.RetrieveAPIView):
             dishes = []
             for dish in sikdan.dishes.all():
                 if "밥" in dish.name:
-                    if "볶음밥" in dish.name or "덮밥" in dish.name or "비빔밥" in dish.name:
+                    if "볶음밥" in dish.name or "덮밥" in dish.name or "비빔밥" in dish.name or "알밥" in dish.name or "김치밥" in dish.name:
                         pass
                     else :
                         dish.avg_rating = -1
