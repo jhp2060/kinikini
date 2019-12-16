@@ -73,7 +73,7 @@ class Command(BaseCommand):
                         elif "김치" is dish_name or "단무지" in dish_name \
                                 or "깍두기" in dish_name or "피클" in dish_name \
                                 or "석박지" in dish_name or "배추김치" is dish_name \
-                                or "포기김치" in dish_name:
+                                or "포기김치" in dish_name or "알타리김치" is dish_name:
                             avg_rating = -1
 
                         dish = {
