@@ -83,15 +83,16 @@ class CafeteriaDetailView(generics.RetrieveAPIView):
             kimchi = {}
             dishes = []
             for dish in sikdan.dishes.all():
-                if "밥" in dish.name:
-                    if "볶음밥" in dish.name or "덮밥" in dish.name or "비빔밥" in dish.name or "알밥" in dish.name or "김치밥" in dish.name:
-                        pass
-                    else :
-                        dish.avg_rating = -1
-                        dish.save()
-                elif "김치" in dish.name or "단무지" in dish.name\
-                        or "깍두기" in dish.name or "피클" in dish.name\
-                        or "석박지" in dish.name :
+                if "쌀밥" is dish.name or "잡곡밥" in dish.name \
+                    or "차조밥" is dish.name or "기장밥" is dish.name \
+                    or "콩밥" is dish.name or "공기밥" is dish.name \
+                    or "공깃밥" is dish.name:
+                    dish.avg_rating = -1
+                    dish.save()
+                elif "김치" is dish.name or "단무지" in dish.name \
+                    or "깍두기" in dish.name or "피클" in dish.name \
+                    or "석박지" in dish.name or "배추김치" is dish.name \
+                    or "포기김치" in dish.name:
                     dish.avg_rating = -1
                     dish.save()
                 tmp = {
