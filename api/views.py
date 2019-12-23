@@ -83,17 +83,17 @@ class CafeteriaDetailView(generics.RetrieveAPIView):
             kimchi = {}
             dishes = []
             for dish in sikdan.dishes.all():
-                if "쌀밥" is dish.name or "잡곡밥" in dish.name \
-                    or "차조밥" is dish.name or "기장밥" is dish.name \
-                    or "콩밥" is dish.name or "공기밥" is dish.name \
-                    or "공깃밥" is dish.name:
+                if "쌀밥" in dish.name or "잡곡밥" in dish.name \
+                    or "차조밥" in dish.name or "기장밥" in dish.name \
+                    or "콩밥" in dish.name or "공기밥" in dish.name \
+                    or "공깃밥" in dish.name:
                     bap = {
                         'id': dish.id,
                         'name': dish.name,
                         'avg_rating': dish.avg_rating,
                     }
                     continue
-                elif "김치" is dish.name[-2:] or "단무지" in dish.name \
+                elif "김치" == dish.name[-2:] or "단무지" in dish.name \
                     or "깍두기" in dish.name or "피클" in dish.name \
                     or "석박지" in dish.name:
                     kimchi = {
