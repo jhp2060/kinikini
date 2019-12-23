@@ -69,7 +69,8 @@ class Command(BaseCommand):
                         if "쌀밥" in dish_name or "잡곡밥" in dish_name\
                                 or "차조밥" in dish_name or "기장밥" in dish_name\
                                 or "콩밥" in dish_name or "공기밥" in dish_name\
-                                or "공깃밥" in dish_name:
+                                or "공깃밥" in dish_name or "흑미밥" in dish_name\
+                                or "귀리밥" in dish_name or "차조밥" in dish_name:
                             avg_rating = -1
                         elif "김치" == dish_name[-2:] or "단무지" in dish_name \
                                 or "깍두기" in dish_name or "피클" in dish_name \
