@@ -109,8 +109,8 @@ class CafeteriaDetailView(generics.RetrieveAPIView):
                 }
                 dishes.append(tmp)
             dishes = sorted(dishes, key=lambda x: (x['avg_rating']), reverse=True)
-            dishes.insert(0, bap)
-            dishes.insert(1, kimchi)
+            if bap is not {} : dishes.insert(0, bap)
+            if kimchi is not {} : dishes.insert(0, kimchi)
             s['dishes'] = dishes
             sikdans.append(s)
 
