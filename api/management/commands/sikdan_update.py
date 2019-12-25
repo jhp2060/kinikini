@@ -62,7 +62,7 @@ class Command(BaseCommand):
                 else :
                     # noinspection PyStatementEffect
                     dish = Dish.objects.filter(name=row_values[0], cafeteria=row_values[5])
-                    if not dish.exists():
+                    if not dish.exists():   
                         dish_name = row_values[0]
                         avg_rating = 0
 
