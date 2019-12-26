@@ -51,11 +51,15 @@ class SimpleCafeteriaSerializer(serializers.ModelSerializer):
 
 class DishSerializer(serializers.ModelSerializer):
     cafeteria = SimpleCafeteriaSerializer()
-    reviews = ReviewUserSerializer(many=True)
+    reviews = serializers.SerializerMethodField()
 
     class Meta:
         model = Dish
         fields = '__all__'
+
+    def get_reviews(self, instance):
+        reviews = instance.reviews.all().order_by('-written_at')
+        return ReviewUserSerializer(reviews,many=True).data
 
 
 class DishUpdateSerializer(serializers.ModelSerializer):
