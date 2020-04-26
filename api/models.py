@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+
 class Organization(models.Model):
     name = models.CharField(max_length=20)
 
@@ -92,7 +93,6 @@ class Review(models.Model):
         return self.dish.cafeteria.organization.name+" "\
                +self.dish.cafeteria.name+" "\
                +self.dish.name+"에 대한 "+self.written_by.username+"의 리뷰"
-
 
 
 # exists as a handler

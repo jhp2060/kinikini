@@ -25,6 +25,8 @@ PROJECT_DIR = os.path.join(BASE_DIR, 'yummy')
 with open(os.path.join(BASE_DIR, 'secrets.json'), 'rb') as f:
     secrets = json.load(f)
 
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'yummy.settings')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 SECRET_KEY = secrets['SECRET_KEY']
 
