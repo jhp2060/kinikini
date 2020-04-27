@@ -6,7 +6,7 @@ DATABASES = {
         'NAME': 'yummy',
         'USER': 'postgres',
         'PASSWORD': '1234',
-        'PORT': 5432,
+        'PORT': 5433,
     }
 }
 
